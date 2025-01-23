@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover Password</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+<body>
+    <h1>Recover Password</h1>
+    <form id="recoverForm">
+        <input type="email" id="recoverEmail" placeholder="Enter your registered email" required>
+        <button type="submit">Send Reset Email</button>
+    </form>
+    <button onclick="window.location.href='index.html'">Back to Login</button>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyCvmzpT2kMtiEqxmLGZGYYBTwbVlQJuygE",
+  authDomain: "smartfarm-16b4b.firebaseapp.com",
+  projectId: "smartfarm-16b4b",
+  storageBucket: "smartfarm-16b4b.firebasestorage.app",
+  messagingSenderId: "681962337345",
+  appId: "1:681962337345:web:3fb314bd6a7eef7d2702c0",
+  measurementId: "G-QKZ0KRHJSJ"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Handle Recover Password
+        const recoverForm = document.getElementById('recoverForm');
+        recoverForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('recoverEmail').value;
+
+            // Check if the email is registered
+            auth.fetchSignInMethodsForEmail(email)
+                .then((signInMethods) => {
+                    if (signInMethods.length > 0) {
+                        // Email is registered; send reset email
+                        auth.sendPasswordResetEmail(email)
+                            .then(() => {
+                                alert('Password reset email sent. Please check your inbox.');
+                                window.location.href = 'index.html';
+                            })
+                            .catch((error) => {
+                                console.error('Error sending reset email:', error);
+                                alert('Error: ' + error.message);
+                            });
+                    } else {
+                        // Email is not registered
+                        alert('This email is not registered. Please check or register.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error checking sign-in methods:', error);
+                    alert('Error: ' + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
